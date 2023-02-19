@@ -97,25 +97,80 @@ class LinkedList
 
   def to_s
     return if head.nil?
-    (0...size).each { |n| print "( #{self.at(n).value} ) -> "}
-    print "nil\n"
+    (0...size).each { |n| print "( #{self.at(n).value || "nil"} ) -> "}
+    puts "nil"
   end
 
-    
+  def insert_at(value, index)
+    return if head.nil?
+    if index == 0
+      self.prepend(value)
+    elsif index < size
+      header = @head
+      (index - 1).times {header = header.nextNode}
+      node_temp = header.nextNode
+      header.nextNode = Node.new(value, node_temp)
+    else
+      header = lastnode
+      (index - size).times {self.append(nil)}
+      self.append(value)
+    end
+  end
 
+  def remove_at(index)
+    return if head.nil? || index >= size || index < 0
+    if index > 0
+      header = @head
+      (index - 1).times { header = header.nextNode}
+      value_retorned = header.nextNode.value
+      value_temp = header.nextNode.nextNode.value
+      node_temp = header.nextNode.nextNode.nextNode
+      header.nextNode = Node.new(value_temp, node_temp)
+      return value_retorned
+    else
+      self.shift
+    end
 
+  end
 
+  def shift
+    return if head.nil?
+    if size > 1
+      shifter = @head.value
+      @head = Node.new(@head.nextNode.value, @head.nextNode.nextNode)
+      return shifter
+    else
+      shifter = @head.value
+      @head = LinkedList.new
+      return shifter
+    end
+  end
 end
 
 
 
 a = LinkedList.new
-a.append(5)
-a.append(4)
-a.append(5)
-a.append(4)
-a.prepend 8
-a.to_s
+a.append(1)
+a.append(2)
+a.append(3)
+puts a.to_s
+a.insert_at(1.5, 1)
+puts a.to_s
+a.insert_at(0,0)
+puts a.to_s
+a.remove_at(1)
+puts a.to_s
+a.remove_at 0
+puts a.to_s
+p a.remove_at 3
+puts a.to_s
+
+
+
+
+
+
+
 
 
 

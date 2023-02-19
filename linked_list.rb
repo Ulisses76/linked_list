@@ -1,95 +1,121 @@
-class LinkedList
-  attr_accessor :head, :last
+class Node
+  attr_accessor :value, :nextNode
+  
+  def initialize(value, nextNode)
+    @value = value
+    @nextNode = nextNode
+  end
 
+end
+
+class LinkedList
+  attr_accessor :head
+  
   def initialize
     @head = nil
   end
 
-  def append(value)
-    if head.nil?
-      head = Node.new(value, nil)
-    else
-      last_node = head
-      p last_node
-
-      while !last_node.next_node.nil?
-        last_node = last_node.next_node
-      end
-
-      last_node.next_node = Node.new(value, nil)
-    end
-  end
-
-  def prepend(value)
-    if head.nil?
-      head = Node.new(value, nil)
-    else
-      temp_node = head
-      head = Node.new(value, temp_node) 
-    end
-      
-  end
-
-  def size
-    return 0 if head.nil?
-    counter=1
-    last_node = head.next_node
-    while !last_node.nil?
-      last_node = last_node.next_node
-      counter += 1
-    end
-    counter
+  def lastnode
+    lastnode = @head
+    until lastnode.nextNode.nil?
+      lastnode = lastnode.nextNode
+    end    
+    lastnode
   end
 
   def first
-    head.nil? ? nil : head.value
+    @head.nil? ? nil : @head.value
   end
 
-  def last
-    last_node = head.next_node
-    while !last_node.nil?
-      last_node = last_node.next_node
-    end 
-    p last_node
-    
+  def tail 
+    @head.nil? ? @head : lastnode
   end
 
-  def tail
-    head.nil? ? nil : last
+  def append(value)    
+    head.nil? ? @head = Node.new(value, nil) : 
+      lastnode.nextNode = Node.new(value, nil)
   end
 
-  
+  def prepend(value)
+    head.nil? ? @head = Node.new(value, nil) : 
+      @head = Node.new(value, @head)
+  end
 
-  private
-
-  class Node
-    attr_accessor :value, :next_node
-
-    def initialize(value, next_node)
-      @value = value
-      @next_node = next_node
+  def size
+    if @head.nil?
+      0
+    else
+      size = 1
+      lastnode = @head
+      until lastnode.nextNode.nil?
+        lastnode = lastnode.nextNode
+        size += 1
+      end
+      size
     end
+  end
+
+  def at(index)
+    if (index >= size) || @head.nil?
+      return
+    else
+      node = @head
+      index.times {node = node.nextNode}
+      node
+    end
+  end
+
+  def pop
+    if size < 2
+      return if @head.nil?
+      temp = @head.value
+      @head = nil
+      return temp
+    else
+      temp = self.at(size - 1)
+      self.at(size - 2).nextNode = nil     
+      return temp.value
+    end  
   end 
+
+  def contains?(value)
+    if head.nil? 
+      return nil
+    else
+      contains = false
+      (0...size).each { |n| contains = true if self.at(n).value == value}
+      contains
+    end
+  end
+
+  def find(value)
+    return if head.nil?
+    index = nil
+    (0...size).each { |n| index = n if self.at(n).value == value && index.nil?}
+    index
+  end
+
+  def to_s
+    return if head.nil?
+    (0...size).each { |n| print "( #{self.at(n).value} ) -> "}
+    print "nil\n"
+  end
+
+    
+
+
 
 end
 
-a = LinkedList.new
-a.append(10)
-a.append(20)
-a.append(30)
-a.append(40)
-p a
-# p "head a = #{a.first}"
 
-# a.prepend(-50)
-# # p a.size
-# b = LinkedList.new
-# b.append(-3)
-# b.prepend(100)
-# # p b.size
-# # p "head b = #{b.first}"
-# p a.tail
-# p b.tail
+
+a = LinkedList.new
+a.append(5)
+a.append(4)
+a.append(5)
+a.append(4)
+a.prepend 8
+a.to_s
 
 
 
